@@ -4,10 +4,10 @@
         <field name="name">Exceptions Rules</field>
         <field name="model">exception.rule.confirm</field>
         <field name="arch" type="xml">
-            <form string="Outstanding exceptions to manager" version="7.0">
+            <form name="Outstanding exceptions to manager" version="7.0">
                 <group>
                     <field name="exception_ids" nolabel="1" colspan="4">
-                        <tree string="Exceptions Rules">
+                        <tree name="Exceptions Rules">
                             <field name="name" />
                             <field name="description" />
                         </tree>

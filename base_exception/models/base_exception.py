@@ -18,11 +18,11 @@ class ExceptionRule(models.Model):
     _order = "active desc, sequence asc"
 
     name = fields.Char("Exception Name", required=True, translate=True)
-    description = fields.Text("Description", translate=True)
+    description = fields.Text(translate=True)
     sequence = fields.Integer(
-        string="Sequence", help="Gives the sequence order when applying the test"
+        name="Sequence", help="Gives the sequence order when applying the test"
     )
-    model = fields.Selection(selection=[], string="Apply on", required=True)
+    model = fields.Selection(selection=[], name="Apply on", required=True)
 
     exception_type = fields.Selection(
         selection=[
@@ -30,7 +30,6 @@ class ExceptionRule(models.Model):
             ("by_py_code", "By python code"),
             ("by_method", "By method"),
         ],
-        string="Exception Type",
         required=True,
         default="by_py_code",
         help="By python code: allow to define any arbitrary check\n"
@@ -39,16 +38,16 @@ class ExceptionRule(models.Model):
         "           are evaluated with several records\n"
         "By method: allow to select an existing check method",
     )
-    domain = fields.Char("Domain")
-    method = fields.Selection(selection=[], string="Method", readonly=True)
-    active = fields.Boolean("Active", default=True)
+    domain = fields.Char()
+    method = fields.Selection(selection=[], name="Method", readonly=True)
+    active = fields.Boolean(default=True)
     code = fields.Text(
         "Python Code",
         help="Python code executed to check if the exception apply or "
         "not. Use failed = True to block the exception",
     )
     is_blocking = fields.Boolean(
-        string="Is blocking",
+        name="Is blocking",
         help="When checked the exception can not be ignored",
     )
 
@@ -158,8 +157,11 @@ class BaseExceptionMethod(models.AbstractModel):
             )  # nocopy allows to return 'result'
         except Exception as e:
             raise UserError(
-                _("Error when evaluating the exception.rule rule:\n %s \n(%s)")
-                % (rule.name, e)
+                _(
+                    "Error when evaluating the exception.rule rule:\n %(name)s \n(%(e)s)",
+                    name=rule.name,
+                    e=e,
+                )
             )
         return space.get("failed", False)
 
@@ -216,9 +218,7 @@ class BaseExceptionModel(models.AbstractModel):
         string="Main Exception",
         store=True,
     )
-    exceptions_summary = fields.Html(
-        "Exceptions Summary", compute="_compute_exceptions_summary"
-    )
+    exceptions_summary = fields.Html(compute="_compute_exceptions_summary")
     exception_ids = fields.Many2many("exception.rule", string="Exceptions", copy=False)
     ignore_exception = fields.Boolean("Ignore Exceptions", copy=False)
 

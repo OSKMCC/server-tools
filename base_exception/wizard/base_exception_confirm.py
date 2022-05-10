@@ -13,7 +13,7 @@ class ExceptionRuleConfirm(models.AbstractModel):
 
     related_model_id = fields.Many2one("base.exception")
     exception_ids = fields.Many2many(
-        "exception.rule", string="Exceptions to resolve", readonly=True
+        "exception.rule", name="Exceptions to resolve", readonly=True
     )
     ignore = fields.Boolean("Ignore Exceptions")
 
